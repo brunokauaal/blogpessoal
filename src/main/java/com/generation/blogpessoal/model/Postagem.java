@@ -20,7 +20,7 @@ public class Postagem {
 	// criar atributos
 
 	@Id                  //indica que o atributo id sera a  Primary key
-	@GeneratedValue(strategy = GenerationType.IDENTITY) //estamos dizendo para o mysql que a responsa do auto increment e deles 
+	@GeneratedValue(strategy = GenerationType.IDENTITY) //estamos dizendo para o mysql que a responsa do auto increment e deles  e indicando que o id e o primary key
 	private Long id; // long pq e objeto e podemos ter n postagens
 
 	@NotBlank(message= "O Atributo  título é obrigatório")  //exclusivo para string texto  nao aceito nulo e  espaço vazio tipo no null porem so pra texto
@@ -30,7 +30,8 @@ public class Postagem {
 	@NotBlank(message= "O Atributo  texto é obrigatório") 
 	@Size(min= 10 ,max =1000, message = "O atributo texto deve ter no minimo 10  e no maximo 1000 caracteres!")
 	private String texto;
-
+	
+	
 	@UpdateTimestamp   // toda vez que atualizar ele mostra  a data e hr q foi feita alteraçao 
 	private LocalDateTime data;
 
