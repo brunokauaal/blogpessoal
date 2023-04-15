@@ -22,6 +22,7 @@ import com.generation.blogpessoal.model.Postagem;
 import com.generation.blogpessoal.repository.PostagemRepository;
 
 import jakarta.validation.Valid;
+import jakarta.validation.constraints.NotNull;
 
 @RestController // indicar que classe e controladora
 @RequestMapping("/postagens") // endereço
@@ -73,11 +74,16 @@ public class PostagemController {
 		Values(???)*/
 	}
 	@PutMapping
-	public ResponseEntity<Postagem> put(@Valid @RequestBody Postagem postagem){
-		
+	public ResponseEntity<Postagem> put(@Valid  @RequestBody Postagem postagem){
+	
+		if(postagemRepository.existsById(postagem.getId())) {
 		return ResponseEntity.status(HttpStatus.OK).body(postagemRepository.save(postagem));
-		
-		
+		}else {
+			return ResponseEntity.status(HttpStatus.NOT_FOUND).build();// Retorna status HTTP 404 se a postagem não existir
+		}
+			
+
+	
 		
 		
 		//fazer a validaçao de id
