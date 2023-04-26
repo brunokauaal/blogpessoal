@@ -12,13 +12,9 @@ import com.generation.blogpessoal.model.Postagem;
 
 public interface PostagemRepository extends JpaRepository<Postagem, Long> {
 
+	//SELECT * FROM tb_postagens WHERE Titulo LIKE "%%"
+	
 	List<Postagem> findAllByTituloContainingIgnoreCase(@Param("titulo") String titulo);
 
-	// aqui so assinamos os metodos abstrato
-	// lista de postagem que vai buscar a palavra titulo
-
-	// Param indica que a variavel sera parametro da consuluta do tipo like
-	// Containing - > like com %%
-	// WHERE -> By
-	// SELECT * FROM tb_postagens WHERE titulo LIKE "%titulo%"
+	
 }

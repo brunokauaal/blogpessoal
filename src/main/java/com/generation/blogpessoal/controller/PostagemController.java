@@ -30,31 +30,27 @@ import jakarta.validation.Valid;
 public class PostagemController {
 
 	@Autowired // Injeçao de dependencia apartir de agr tu Spring cria objetos manipula dados
-	// dleta e etc para ter acesso ao dados do db
+
 	private PostagemRepository postagemRepository;
 
 	@Autowired
-	private TemaRepository TemaRepository;
-	
-	
+	private TemaRepository temaRepository;
+
 	@GetMapping
 	public ResponseEntity<List<Postagem>> getAll() { // resposta http status no caso vai trazer lista de postagens que
-														// tem la dentro fizemos uma listagem da nossa tabela
-		// vai devolver o status e o metodo que vai mostrar nossa tabela
-		return ResponseEntity.ok(postagemRepository.findAll());
+														// tem la dentro do repository fizemos uma listagem da nossa
+														// tabela
+
+		return ResponseEntity.ok(postagemRepository.findAll()); // vai devolver o status e o metodo que vai mostrar
+																// nossa tabela
 
 		// SELECT * FORM tb_postagens;
 	}
 
-	@GetMapping("/{id}") // indicando que o parametro e variavel ou seja valor altera conforme a
-							// necessidade
-	public ResponseEntity<Postagem> getById(@PathVariable Long id) { // serve pra puxar informaçoes que vem do id e o
-																		// parametro do metodo
-		// LAMBIDA
-		return postagemRepository.findById(id).map(resposta -> ResponseEntity.ok(resposta)) // dentro da variavel
-																							// resposta joga o resultado
-																							// se for null ele devolve o
-																							// or
+	@GetMapping("/{id}") 
+	public ResponseEntity<Postagem> getById(@PathVariable Long id) { 
+
+		return postagemRepository.findById(id).map(resposta -> ResponseEntity.ok(resposta)) 
 				.orElse(ResponseEntity.status(HttpStatus.NOT_FOUND).build());
 
 		// SELECT * FORM tb_postagens WHERE id=?;
@@ -66,53 +62,46 @@ public class PostagemController {
 		return ResponseEntity.ok(postagemRepository.findAllByTituloContainingIgnoreCase(titulo));
 
 		// SELECT * FROM tb_postagens WHERE titulo LIKE "%titulo%";
-}
-	
-	//fazer postagem
-	@PostMapping
-	public ResponseEntity<Postagem> post(@Valid @RequestBody Postagem postagem){
-	return ResponseEntity.status(HttpStatus.CREATED).body(postagemRepository.save(postagem));
-		
-		
-		/* INSERT  INTO tb_postagens (data,titulo,texto)
-		Values(???)*/
 	}
-	@PutMapping
-	public ResponseEntity<Postagem> put(@Valid  @RequestBody Postagem postagem){
-	
-		if(postagemRepository.existsById(postagem.getId())) {
-		return ResponseEntity.status(HttpStatus.OK).body(postagemRepository.save(postagem));
-		}else {
-			return ResponseEntity.status(HttpStatus.NOT_FOUND).build();// Retorna status HTTP 404 se a postagem não existir
-		}
-			
 
-	
-		
-		
-		//fazer a validaçao de id
+	// fazer postagem
+	@PostMapping
+	public ResponseEntity<Postagem> post(@Valid @RequestBody Postagem postagem) {
+		// INSERT INTO tb_postagens (titulo,texto) VALUES(???)
+
+		return temaRepository.findById(postagem.getTema().getId())
+				.map(resposta -> ResponseEntity.status(HttpStatus.CREATED).body(postagemRepository.save(postagem)))
+				.orElse(ResponseEntity.status(HttpStatus.BAD_REQUEST).build());
+
+	}
+
+	@PutMapping
+	public ResponseEntity<Postagem> put(@Valid @RequestBody Postagem postagem) {
+
+		return postagemRepository.findById(postagem.getId())
+				.map(resposta -> temaRepository.findById(postagem.getTema().getId())
+						.map(resposta2 -> ResponseEntity.status(HttpStatus.OK).body(postagemRepository.save(postagem)))
+						.orElse(ResponseEntity.status(HttpStatus.BAD_REQUEST).build()))
+				.orElse(ResponseEntity.status(HttpStatus.NOT_FOUND).build());
+
 		/* UPDATE tb_postagens SET titulo= ?, texto = ?, data =? , WHERE id = id */
 	}
+
 	@ResponseStatus(HttpStatus.NO_CONTENT)
 	@DeleteMapping("/{id}")
 	public void delete(@PathVariable Long id) {
-	 Optional <Postagem>postagem = postagemRepository.findById(id);
-	
-			if(postagem.isEmpty())
-	            throw new ResponseStatusException(HttpStatus.NOT_FOUND);
-			else
-				postagemRepository.deleteById(id);
-			
-		throw new ResponseStatusException(HttpStatus.OK);
+		Optional<Postagem> postagem = postagemRepository.findById(id);
+
+		if (postagem.isEmpty())
+			throw new ResponseStatusException(HttpStatus.NOT_FOUND);
+		else
+			postagemRepository.deleteById(id);
+
+		throw new ResponseStatusException(HttpStatus.NO_CONTENT);
+
 		
-		//Não sei se deixo status ok ou nocontent 
+
 		
-		/* DELETE * FROM tb_postagens WHERE  id= id*/
 	}
-	
-	
-	
-    
-	
-	
+
 }
