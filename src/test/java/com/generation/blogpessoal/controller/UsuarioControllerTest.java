@@ -133,11 +133,13 @@ public class UsuarioControllerTest {
 		Optional<Usuario> usuarioCadastrado = usuarioService
 				.cadastrarUsuario(new Usuario(0L, "admin", "admin@email.com.br", "12345678", "-"));
 
-		/* faz a requisição para buscar o usuário cadastrado */
+		/* FAZ A REQUISIÇÃO PARA BUSCAR O USUÁRIO CADASTRADO */
+		
 		ResponseEntity<String> resposta = testRestTemplate
 				.withBasicAuth("root@root.com", "rootroot")
 				.exchange("/usuarios/{id}", HttpMethod.GET, null, String.class, usuarioCadastrado.get().getId());
 
+		
 		/* VEREFICA SE A RESPOSTA FOI BEM SUCEDIDA */
 		assertEquals(HttpStatus.OK, resposta.getStatusCode());
 	}

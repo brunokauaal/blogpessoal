@@ -43,7 +43,8 @@ public class TemaController {
 
 	public ResponseEntity<Tema> getById(@PathVariable Long id) {
 
-		return temaRepository.findById(id).map(resposta -> ResponseEntity.ok(resposta))
+		return temaRepository.findById(id)
+				.map(resposta -> ResponseEntity.ok(resposta))
 				.orElse(ResponseEntity.status(HttpStatus.NOT_FOUND).build());
 
 	}
@@ -56,27 +57,19 @@ public class TemaController {
 
 	@PostMapping
 	public ResponseEntity<Tema> post(@Valid @RequestBody Tema tema) {
-	    if (temaRepository.existsById(tema.getId())) {
-	        return ResponseEntity.status(HttpStatus.CREATED)
-	                .body(temaRepository.save(tema));
-	    } else {
-	        return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
-	    }
+	 
+	return ResponseEntity.status(HttpStatus.CREATED).body(temaRepository.save(tema));
+	    
 	}
 
 	
 
-	@PutMapping
+	@PutMapping ("/{id}")
 	public ResponseEntity<Tema> put(@PathVariable Long id, @Valid @RequestBody Tema tema) {
 
-		if (temaRepository.existsById(id)) {
-			return temaRepository.findById(tema.getId())
-					.map(resposta -> ResponseEntity.status(HttpStatus.CREATED).body(temaRepository.save(tema)))
-					.orElse(ResponseEntity.status(HttpStatus.NOT_FOUND).build());
-		} else {
-			return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
-		}
-
+		return temaRepository.findById(tema.getId())
+				.map(resposta -> ResponseEntity.status(HttpStatus.OK).body(temaRepository.save(tema)))
+				.orElse(ResponseEntity.status(HttpStatus.NOT_FOUND).build());
 	}
 
 	@ResponseStatus(HttpStatus.NO_CONTENT)
