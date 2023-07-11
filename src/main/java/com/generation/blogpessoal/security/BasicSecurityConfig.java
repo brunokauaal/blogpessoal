@@ -65,7 +65,7 @@ public class BasicSecurityConfig {
                         .requestMatchers("/postagens").permitAll()
                         .requestMatchers("/temas").permitAll()
                         .requestMatchers("/temas/descricao/{descricao}").permitAll()
-                        .requestMatchers("/postagensportitulo").permitAll()
+                        .requestMatchers("/postagens/titulo/{titulo}").permitAll()
                         .requestMatchers("/error/**").permitAll()
                         .requestMatchers(HttpMethod.OPTIONS).permitAll()
                         .anyRequest().authenticated())
